@@ -68,8 +68,29 @@ namespace Budget.Controllers
 
             return Ok();
         }
+        [HttpPut,Route("{id}")]
+        public IHttpActionResult Edit(int id,CategoryAction categoryAction)
+        {
+            string token = Request.Headers.GetValues("token").First().ToString();
 
+            User user = _context.Users.FirstOrDefault(u => u.Token == token);
 
+            Category category = _context.Categories.FirstOrDefault(c => c.UserId == user.Id && c.Id == id);
+
+            if (category == null)
+
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            category.Name = categoryAction.Name;
+            _context.SaveChanges();
+            return Ok();
+        }
 
 
     }
