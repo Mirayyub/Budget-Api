@@ -93,5 +93,50 @@ namespace Budget.Controllers
         }
 
 
+        [HttpDelete, Route("{id}")]
+
+        public IHttpActionResult Delete(int id)
+        {
+            string token = Request.Headers.GetValues("token").First().ToString();
+
+            User user = _context.Users.FirstOrDefault(u => u.Token == token);
+
+            Category category = _context.Categories.FirstOrDefault(c => c.UserId == user.Id && c.Id == id);
+
+            if (category == null)
+
+            {
+                return NotFound();
+            }
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return Ok();
+
+        }
+
+
+        [HttpGet, Route("{id}")]
+        public IHttpActionResult Single(int id)
+        {
+            string token = Request.Headers.GetValues("token").First().ToString();
+
+            User user = _context.Users.FirstOrDefault(u => u.Token == token);
+
+            Category category = _context.Categories.FirstOrDefault(c => c.UserId == user.Id && c.Id == id);
+
+            if (category == null)
+
+            {
+                return NotFound();
+            }
+
+            
+            return Ok(new { 
+            category.Id,
+            category.Name
+            });
+
+        }
     }
 }
